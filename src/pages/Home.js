@@ -6,7 +6,7 @@ function Home() {
         <>
             <div id = "header"></div>
             <h1>Amongus test amongus</h1>
-            <img url="/images/gooseChess.png" height = "100px" width = "100px"></img>
+            <img url="/images/gooseChess.png" alt="no imgage"></img>
         </>
     );
 }

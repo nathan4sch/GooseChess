@@ -1,5 +1,4 @@
 import Bishop from '../pieces/bishop.js';
-import Goose from '../pieces/goose.js';
 import King from '../pieces/king.js';
 import Knight from '../pieces/knight.js';
 import Pawn from '../pieces/pawn.js';

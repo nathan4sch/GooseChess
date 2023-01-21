@@ -4,7 +4,6 @@ import './Game.css';
 import Board from '../components/board.js';
 import King from '../pieces/king';
 import Queen from '../pieces/queen';
-import Pawn from '../pieces/pawn';
 import Goose from '../pieces/goose';
 import FallenSoldierBlock from '../components/fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
@@ -26,12 +25,20 @@ export default class Game extends React.Component {
     }
     
     // setting the intial board to include a goose
-    let randomValue = Math.floor(Math.random() * (39 - 24 + 1)) + 24;
-    let initialGoose = new Goose(3, randomValue);
-    this.state.squares[randomValue] = initialGoose;
-    console.log("Initial goose starting value: " + randomValue);
-    this.state.geese.push(initialGoose);
-    
+    for (let i = 0; i < 2; i++) {
+      let notValidSquare = true;
+      while (notValidSquare) {
+        let randomValue = Math.floor(Math.random() * (39 - 24 + 1)) + 24;
+        if (this.state.squares[randomValue] === null) {
+          notValidSquare = false;
+        }
+      }
+      let randomValue = Math.floor(Math.random() * (39 - 24 + 1)) + 24;
+      let initialGoose = new Goose(3, randomValue);
+      this.state.squares[randomValue] = initialGoose;
+      console.log("Initial goose starting value: " + randomValue);
+      this.state.geese.push(initialGoose);
+    }
   }
 
 
@@ -78,17 +85,18 @@ export default class Game extends React.Component {
       const isMoveLegal = this.isMoveLegal(srcToDestPath);
       const isCastle = squares[this.state.sourceSelection].constructor.name === "King" && Math.abs(this.state.sourceSelection - i) === 2;
       const canLeftCastle = (this.state.turn === "white" && squares[56] && squares[56].constructor.name === "Rook" && !squares[56].moved && this.isMoveLegal(squares[56].getSrcToDestPath(56, 59)) && !squares[59]) ||
-        (this.state.turn === "black" && squares[0] && squares[0].constructor.name === "Rook" && !squares[0].moved && this.isMoveLegal(squares[0].getSrcToDestPath(0, 3)) && !squares[3]);
+        (this.state.turn === "black" && squares[0] && squares[0].constructor.name === "Rook" && !squares[0].moved
+        && this.isMoveLegal(squares[0].getSrcToDestPath(0, 3)) && !squares[3]);
       const canRightCastle = (this.state.turn === "white" && squares[63] && squares[63].constructor.name === "Rook" && !squares[63].moved && this.isMoveLegal(squares[63].getSrcToDestPath(63, 61)) && !squares[61]) ||
         (this.state.turn === "black" && squares[7] && squares[7].constructor.name === "Rook" && !squares[7].moved && this.isMoveLegal(squares[7].getSrcToDestPath(7, 5)) && !squares[5]);
       const isEnPassant = squares[this.state.sourceSelection].constructor.name === "Pawn" && !squares[i] &&
         (((this.state.sourceSelection % 8) - 1 === this.state.enPassantColumn) || ((this.state.sourceSelection % 8) + 1 === this.state.enPassantColumn)) &&
-        (this.state.sourceSelection >= 24 && this.state.sourceSelection <= 31)
+        ((this.state.turn === "white" && this.state.sourceSelection >= 24 && this.state.sourceSelection <= 31) || (this.state.turn === "black" && this.state.sourceSelection >= 32 && this.state.sourceSelection <= 39))
       
       if (isMovePossible && isMoveLegal && (squares[i] === null || squares[i].constructor.name !== "Goose") && (!isCastle || (this.state.sourceSelection - i === 2 && canLeftCastle) || (this.state.sourceSelection - i === -2 && canRightCastle))) {
         if (squares[i] !== null) {
           
-          this.setState.numberOfFallenSoldiers(oldState => ({numberOfFallenSoldiers: oldState.numberOfFallenSoldiers + 1}))
+          this.setState(oldState => ({numberOfFallenSoldiers: oldState.numberOfFallenSoldiers + 1}))
           console.log("number of fallen soldiers" + this.state.numberOfFallenSoldiers);
 
           if (squares[i].player === 1) {
@@ -253,6 +261,34 @@ export default class Game extends React.Component {
             possiblePositions.push(position - 1);
           }
         }
+        let capture = false;
+        if(possiblePositions.length === 0) {
+          capture = true;
+          if (squares[position - 9].constructor.name !== "King") {
+            possiblePositions.push(position - 9);
+          }
+          if (squares[position - 8].constructor.name !== "King") {
+            possiblePositions.push(position - 8);
+          }
+          if (squares[position - 7].constructor.name !== "King") {
+            possiblePositions.push(position - 7);
+          }
+          if (squares[position + 9].constructor.name !== "King") {
+            possiblePositions.push(position + 9);
+          }
+          if (squares[position + 8].constructor.name !== "King") {
+            possiblePositions.push(position + 8);
+          }
+          if (squares[position + 7].constructor.name !== "King") {
+            possiblePositions.push(position + 7);
+          }
+          if (squares[position - 1].constructor.name !== "King") {
+            possiblePositions.push(position - 1);
+          }
+          if (squares[position + 1].constructor.name !== "King") {
+            possiblePositions.push(position + 1);
+          }
+        }
           console.log(position);
           console.log(possiblePositions);
           let newPositionIndex = Math.floor(Math.random() * (possiblePositions.length));
@@ -265,12 +301,10 @@ export default class Game extends React.Component {
           //this.Goose.position = possiblePositions[newPositionIndex];
           this.state.geese[i].changePosition(possiblePositions[newPositionIndex]);
         }
-
-      }
-      else {
+      } else {
         this.setState({
           status: "Wrong selection. Choose valid source and destination again.",
-          sourceSelection: -1,
+         sourceSelection: -1
         });
       }
     }
@@ -304,7 +338,8 @@ export default class Game extends React.Component {
    * @param  {[type]}  srcToDestPath [array of board indices comprising path between src and dest ]
    * @return {Boolean}               
    */
-    isMoveLegal(srcToDestPath){
+
+  isMoveLegal(srcToDestPath){
     let isLegal = true;
     for(let i = 0; i < srcToDestPath.length; i++){
       if(this.state.squares[srcToDestPath[i]] !== null){
