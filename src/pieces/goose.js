@@ -2,9 +2,24 @@ import Piece from './piece.js';
 import { isSameDiagonal, isSameRow } from '../helpers'
 
 export default class Goose extends Piece {
-  constructor(player, position) {
-    super(player, (player === 1 ? "https://upload.wikimedia.org/wikipedia/commons/0/01/GoosePieceSmall.svg" : "https://upload.wikimedia.org/wikipedia/commons/0/01/GoosePieceSmall.svg"));
-    this.position = position
+  constructor(player, position, color) {
+    
+    const gooseColors = {
+      Black: "pfx.svg",
+      Darkgreen: "ph1.svg",
+      Orange: "phr.svg",
+      Darkblue: "phW.svg",
+      Purple: "pgY.svg",
+      Blue: "phX.svg",
+      Teal: "phL.svg",
+      Green: "phM.svg",
+      Yellow: "pgt.svg",
+      Red: "pgu.svg"
+    }
+    console.log(gooseColors[color]);
+    super(player, "https://svgshare.com/i/" + gooseColors[color]);
+    this.position = position;
+    this.color = color;
   }
 
   isMovePossible(src, dest) {
