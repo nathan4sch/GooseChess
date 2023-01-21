@@ -1,13 +1,12 @@
 import React from 'react';
 
-import '../index.css';
-import './game.css';
-import Board from './board.js';
+import './Game.css';
+import Board from '../components/board.js';
 import King from '../pieces/king';
 import Queen from '../pieces/queen';
 import Pawn from '../pieces/pawn';
 import Goose from '../pieces/goose';
-import FallenSoldierBlock from './fallen-soldier-block.js';
+import FallenSoldierBlock from '../components/fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
 
 export default class Game extends React.Component {
@@ -21,7 +20,8 @@ export default class Game extends React.Component {
       player: 1,
       sourceSelection: -1,
       status: '',
-      turn: 'white'
+      turn: 'white',
+      enPassantColumn: -1
     }
     
     // setting the intial board to include a goose
@@ -57,6 +57,11 @@ export default class Game extends React.Component {
 
     squares[this.state.sourceSelection].style = { ...squares[this.state.sourceSelection].style, backgroundColor: "" };
 
+    if (squares[this.state.sourceSelection].constructor.name === "King" && !squares[this.state.sourceSelection].moved && (this.state.sourceSelection - i === -3 || this.state.sourceSelection - i === 4)) {
+      if (i < this.state.sourceSelection) i += 2
+      else i -= 1
+    }
+
     if (squares[i] && squares[i].player === this.state.player) {
       this.setState({
         status: "Wrong selection. Choose valid source and destination again.",
@@ -64,19 +69,18 @@ export default class Game extends React.Component {
       });
     }
     else {
-
       const whiteFallenSoldiers = [];
       const blackFallenSoldiers = [];
       const isDestEnemyOccupied = Boolean(squares[i]);
       const isMovePossible = squares[this.state.sourceSelection].isMovePossible(this.state.sourceSelection, i, isDestEnemyOccupied);
       const srcToDestPath = squares[this.state.sourceSelection].getSrcToDestPath(this.state.sourceSelection, i);
       const isCastle = squares[this.state.sourceSelection].constructor.name === "King" && Math.abs(this.state.sourceSelection - i) === 2;
-      const canLeftCastle = (this.state.turn === "white" && squares[56] !== null && squares[56].constructor.name === "Rook" && !squares[56].moved && this.isMoveLegal(squares[56].getSrcToDestPath(56, 59))) ||
-        (this.state.turn === "black" && squares[0] !== null && squares[0].constructor.name === "Rook" && !squares[0].moved && this.isMoveLegal(squares[0].getSrcToDestPath(0, 3)));
-      const canRightCastle = (this.state.turn === "white" && squares[63] !== null && squares[63].constructor.name === "Rook" && !squares[63].moved && this.isMoveLegal(squares[63].getSrcToDestPath(63, 61))) ||
-      (this.state.turn === "black" && squares[7] !== null && squares[7].constructor.name === "Rook" && !squares[7].moved && this.isMoveLegal(squares[7].getSrcToDestPath(7, 5)))
+      const canLeftCastle = (this.state.turn === "white" && squares[56] && squares[56].constructor.name === "Rook" && !squares[56].moved && this.isMoveLegal(squares[56].getSrcToDestPath(56, 59)) && !squares[59]) ||
+        (this.state.turn === "black" && squares[0] && squares[0].constructor.name === "Rook" && !squares[0].moved && this.isMoveLegal(squares[0].getSrcToDestPath(0, 3)) && !squares[3]);
+      const canRightCastle = (this.state.turn === "white" && squares[63] && squares[63].constructor.name === "Rook" && !squares[63].moved && this.isMoveLegal(squares[63].getSrcToDestPath(63, 61)) && !squares[61]) ||
+      (this.state.turn === "black" && squares[7] && squares[7].constructor.name === "Rook" && !squares[7].moved && this.isMoveLegal(squares[7].getSrcToDestPath(7, 5)) && !squares[5])
       const isMoveLegal = this.isMoveLegal(srcToDestPath);
-
+      
       if (isMovePossible && isMoveLegal && (squares[i] === null || squares[i].constructor.name !== "Goose") && (!isCastle || (this.state.sourceSelection - i === 2 && canLeftCastle) || (this.state.sourceSelection - i === -2 && canRightCastle))) {
         if (squares[i] !== null) {
           if (squares[i].player === 1) {
@@ -93,6 +97,11 @@ export default class Game extends React.Component {
               alert("White wins!")
             }
           }
+        }
+        if (squares[this.state.sourceSelection].constructor.name === "Pawn" && Math.abs(this.state.sourceSelection - i) > 8) {
+          this.setState(oldState => ({enPassantColumn: i % 8}))
+        } else {
+          this.setState(oldState => ({enPassantColumn: -1}))
         }
         if (squares[this.state.sourceSelection].constructor.name === "King" || squares[this.state.sourceSelection].constructor.name === "Rook") {
           console.log(squares[this.state.sourceSelection].moved)
@@ -113,14 +122,14 @@ export default class Game extends React.Component {
           }
           else {
             if (this.state.turn === "white") {
-              squares[63] = squares[61]
+              squares[61] = squares[63]
               squares[63] = null
               squares[61].moved = true
             }
             else {
-              squares[5] = squares[0]
-              squares[0] = null
-              squares[3].moved = true
+              squares[5] = squares[7]
+              squares[7] = null
+              squares[5].moved = true
             }
           }
         }
@@ -141,22 +150,19 @@ export default class Game extends React.Component {
           let player = this.state.player === 1 ? 2 : 1;
           let turn = this.state.turn === 'white' ? 'black' : 'white';
 
-          //Pawn Premotion
-          if(squares[i].constructor.name == "Pawn" ){
-            console.log("PJ " + i);
-            if(squares[i] === 0 || squares[i] === 1 ||
-               squares[i] === 2 || squares[i] === 3 ||
-               squares[i] === 4 || squares[i] === 5 ||
-               squares[i] === 6 || squares[i] === 7 ) {
+          //Pawn Promotion
+          if(squares[i].constructor.name === "Pawn" ) {
+            if(i === 0 || i === 1 ||
+               i === 2 || i === 3 ||
+               i === 4 || i === 5 ||
+               i === 6 || i === 7 ) {
               whiteFallenSoldiers.push(squares[i]);
               squares[i] = new Queen(1);
-                  }
-            }
-            else{
-            if(squares[i] == 56 || squares[i] == 57 ||
-                squares[i] == 58 || squares[i] == 59 ||
-                squares[i] == 60 || squares[i] == 61 ||
-                squares[i] == 62 || squares[i] == 63 ){
+               }
+              if(i === 56 || i === 57 ||
+                i === 58 || i === 59 ||
+                i === 60 || i === 61 ||
+                i === 62 || i === 63 ) {
               blackFallenSoldiers.push(squares[i]);
               squares[i] = new Queen(2);
             } 
@@ -177,6 +183,43 @@ export default class Game extends React.Component {
         for(let i = 0; i < this.state.geese.length; i++) {
           let position = this.state.geese[i].position;
           let possiblePositions = [];
+
+
+          if (position === 0 || position === 8 || position === 16 || position === 24 || position === 32 || 
+            position === 40 || position === 48 || position === 56) {
+              if (squares[position - 8] === null) {
+                possiblePositions.push(position - 8);
+              }
+              if (squares[position - 7] === null) {
+                possiblePositions.push(position - 7);
+              }
+              if (squares[position + 1] === null) {
+                possiblePositions.push(position + 1);
+              }
+              if (squares[position + 9] === null) {
+                possiblePositions.push(position + 9);
+              }
+              if (squares[position + 8] === null) {
+                possiblePositions.push(position + 8);
+              }
+            } else if (position === 7 || position === 15 || position === 23 || position === 31 || position === 39 || 
+              position === 47 || position === 55 || position === 63) {
+                if (squares[position - 9] === null) {
+                  possiblePositions.push(position - 9);
+                }
+                if (squares[position - 8] === null) {
+                  possiblePositions.push(position - 8);
+                }
+                if (squares[position + 8] === null) {
+                  possiblePositions.push(position + 8);
+                }
+                if (squares[position + 7] === null) {
+                  possiblePositions.push(position + 7);
+                }
+                if (squares[position - 1] === null) {
+                  possiblePositions.push(position - 1);
+                }
+            } else {
           if (squares[position - 9] === null) {
             possiblePositions.push(position - 9);
           }
@@ -201,6 +244,7 @@ export default class Game extends React.Component {
           if (squares[position - 1] === null) {
             possiblePositions.push(position - 1);
           }
+        }
           console.log(position);
           console.log(possiblePositions);
           let newPositionIndex = Math.floor(Math.random() * (possiblePositions.length));
@@ -275,8 +319,9 @@ export default class Game extends React.Component {
           </div>
           <div className="game-info">
             <h3>Turn</h3>
-            <div id="player-turn-box" style={{ backgroundColor: this.state.turn }}>
-
+            <div className="player-turn-box-container">
+              <div id="player-turn-box" style={{ backgroundColor: this.state.turn }}>
+            </div>
             </div>
             <div className="game-status">{this.state.status}</div>
 

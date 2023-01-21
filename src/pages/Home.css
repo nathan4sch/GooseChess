@@ -1,0 +1,12 @@
+body {
+    background-color: white;
+}
+h1 {
+    color: white;
+    height: 500px;
+}
+#header {
+    background: url("/images/gooseChess.png");
+    width: 100px;
+    height: auto;
+}
