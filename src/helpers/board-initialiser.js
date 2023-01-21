@@ -1,4 +1,5 @@
 import Bishop from '../pieces/bishop.js';
+import Goose from '../pieces/goose.js';
 import King from '../pieces/king.js';
 import Knight from '../pieces/knight.js';
 import Pawn from '../pieces/pawn.js';
@@ -12,6 +13,7 @@ export default function initialiseChessBoard() {
     squares[i] = new Pawn(2);
     squares[i + 40] = new Pawn(1);
   }
+
   squares[0] = new Rook(2);
   squares[7] = new Rook(2);
   squares[56] = new Rook(1);
@@ -32,6 +34,8 @@ export default function initialiseChessBoard() {
 
   squares[59] = new Queen(1);
   squares[60] = new King(1);
+
+
 
   return squares;
 }
