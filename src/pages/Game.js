@@ -21,7 +21,8 @@ export default class Game extends React.Component {
       sourceSelection: -1,
       status: '',
       turn: 'white',
-      enPassantColumn: -1
+      enPassantColumn: -2,
+      numberOfFallenSoldiers: 0,
     }
     
     // setting the intial board to include a goose
@@ -74,15 +75,22 @@ export default class Game extends React.Component {
       const isDestEnemyOccupied = Boolean(squares[i]);
       const isMovePossible = squares[this.state.sourceSelection].isMovePossible(this.state.sourceSelection, i, isDestEnemyOccupied);
       const srcToDestPath = squares[this.state.sourceSelection].getSrcToDestPath(this.state.sourceSelection, i);
+      const isMoveLegal = this.isMoveLegal(srcToDestPath);
       const isCastle = squares[this.state.sourceSelection].constructor.name === "King" && Math.abs(this.state.sourceSelection - i) === 2;
       const canLeftCastle = (this.state.turn === "white" && squares[56] && squares[56].constructor.name === "Rook" && !squares[56].moved && this.isMoveLegal(squares[56].getSrcToDestPath(56, 59)) && !squares[59]) ||
         (this.state.turn === "black" && squares[0] && squares[0].constructor.name === "Rook" && !squares[0].moved && this.isMoveLegal(squares[0].getSrcToDestPath(0, 3)) && !squares[3]);
       const canRightCastle = (this.state.turn === "white" && squares[63] && squares[63].constructor.name === "Rook" && !squares[63].moved && this.isMoveLegal(squares[63].getSrcToDestPath(63, 61)) && !squares[61]) ||
-      (this.state.turn === "black" && squares[7] && squares[7].constructor.name === "Rook" && !squares[7].moved && this.isMoveLegal(squares[7].getSrcToDestPath(7, 5)) && !squares[5])
-      const isMoveLegal = this.isMoveLegal(srcToDestPath);
+        (this.state.turn === "black" && squares[7] && squares[7].constructor.name === "Rook" && !squares[7].moved && this.isMoveLegal(squares[7].getSrcToDestPath(7, 5)) && !squares[5]);
+      const isEnPassant = squares[this.state.sourceSelection].constructor.name === "Pawn" && !squares[i] &&
+        (((this.state.sourceSelection % 8) - 1 === this.state.enPassantColumn) || ((this.state.sourceSelection % 8) + 1 === this.state.enPassantColumn)) &&
+        (this.state.sourceSelection >= 24 && this.state.sourceSelection <= 31)
       
       if (isMovePossible && isMoveLegal && (squares[i] === null || squares[i].constructor.name !== "Goose") && (!isCastle || (this.state.sourceSelection - i === 2 && canLeftCastle) || (this.state.sourceSelection - i === -2 && canRightCastle))) {
         if (squares[i] !== null) {
+          
+          this.setState.numberOfFallenSoldiers(oldState => ({numberOfFallenSoldiers: oldState.numberOfFallenSoldiers + 1}))
+          console.log("number of fallen soldiers" + this.state.numberOfFallenSoldiers);
+
           if (squares[i].player === 1) {
             whiteFallenSoldiers.push(squares[i]);
             if (squares[i].constructor.name === "King") {
@@ -101,7 +109,7 @@ export default class Game extends React.Component {
         if (squares[this.state.sourceSelection].constructor.name === "Pawn" && Math.abs(this.state.sourceSelection - i) > 8) {
           this.setState(oldState => ({enPassantColumn: i % 8}))
         } else {
-          this.setState(oldState => ({enPassantColumn: -1}))
+          this.setState(oldState => ({enPassantColumn: -2}))
         }
         if (squares[this.state.sourceSelection].constructor.name === "King" || squares[this.state.sourceSelection].constructor.name === "Rook") {
           console.log(squares[this.state.sourceSelection].moved)

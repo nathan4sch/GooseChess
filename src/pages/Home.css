@@ -6,7 +6,7 @@ h1 {
     height: 500px;
 }
 #header {
-    background: url("/images/gooseChess.png");
+    background: url("/public/images/gooseChess.png");
     width: 100px;
     height: auto;
 }
