@@ -11,7 +11,7 @@ function Home() {
                 Goose chess is chess with a twist: There are multiple goose pieces on the board.
                 Goose pieces are initialized at random positions and will move randomly to any unoccupied adjacent space. There are two geese at the start of the game, and a new goose is added for every three pieces taken, until there are nine geese on the board. <br /> <br />
                 Goose pieces act as a third party and will block any form of movement. If a goose piece is completely surrounded they will capture one of the surrounding pieces. <br /><br />
-                To win in goose chess, the opposing king must be captured. Check and checkmate do not exist, as the player can utilize goose pieces to block checks
+                <b>To win in goose chess, the opposing king must be captured. Check and checkmate do not exist, as the player can utilize goose pieces to block checks</b>
                 <div id="spacer"></div>
                 <a href="/game">
                 <center><button>

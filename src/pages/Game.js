@@ -113,7 +113,7 @@ export default class Game extends React.Component {
     }
   }
 
-  handleClick(i) {
+  async handleClick(i) {
     if (!this.state.ingame) {
       //waiting to find a game
       return;
@@ -121,6 +121,7 @@ export default class Game extends React.Component {
 
     if ((this.state.turn === "white" && this.state.player === 2) || (this.state.turn === "black" && this.state.player === 1)) {
       this.setState({status: "It's not your turn."})
+      return;
     } 
 
     const squares = [...this.state.squares];
@@ -332,14 +333,15 @@ export default class Game extends React.Component {
           }
 
           
-          this.setState(oldState => ({
+          await this.setState(oldState => ({
             sourceSelection: -1,
-            squares,
+            squares: squares,
             whiteFallenSoldiers: [...oldState.whiteFallenSoldiers, ...whiteFallenSoldiers],
             blackFallenSoldiers: [...oldState.blackFallenSoldiers, ...blackFallenSoldiers],
             status: '',
             turn
           }));
+          
         }
 
         //goosemove
@@ -489,6 +491,7 @@ export default class Game extends React.Component {
 
         // Send new board to the server for the other player to recieve.
         console.log("Sending data");
+        console.log(this.state.squares);
         console.log(this.serialize());
         this.state.connection.send(JSON.stringify({type: "boardUpdate", data: this.serialize()}));
 
