@@ -1,31 +1,34 @@
-# React Chess
-Two player chess game built with React js.
+![gooseChess.png](https://i.ibb.co/tDn2GZf/goose-Chess.png)
+# Goose Chess
+## Game Rules:
+Goose chess is chess with a twist: There are multiple goose pieces on the board.
 
-## How To Install And Run Locally
+Goose pieces are initialized at random positions and will move randomly to any unoccupied adjacent space. There are two geese at the start of the game, and a new goose is added for every three pieces taken, until there are nine geese on the board.
 
-- Pull the project and `cd` into it
-- Install packages with `npm install`
-- Finally `npm run start`, which will start hot reloading, and fire up browser with http://localhost:3000/
+Goose pieces act as a third party and will block any form of movement. If a goose piece is completely surrounded they will capture one of the surrounding pieces.
 
-## How It's Built
-The components boilerplate structure consisting of Game, Board and Square is same as of Facebook [tic tac toe tutorial](https://facebook.github.io/react/tutorial/tutorial.html).
+### **To win in goose chess, the opposing king must be captured. Check and checkmate do not exist, as the player can utilize goose pieces to block checks. Don't accidentally blunder your king!**
 
-ES6 classes have been used for chess pieces. `Piece` is a parent class to which `King`, `Queen`, `Bishop`, `Knight`, `Rook` and `Pawn` extend. Board of squares is filled with these pieces and `null`.
+---
+## Using the website:
+The website is simple - just visit the home page and select the "Play Game" button. This will place you in a game queue until another player also joins the queue. Once you are both in the game, it begins!
 
-`Game` component maintains the board of squares filled with pieces, and handles turn and move of both players. 
+---
+## Why??
 
-Each piece implements `isMovePossible(src, dest)` and `getSrcToDestPath(src, dest)` methods which `Game` uses to identify legality of move and to render UI accordingly.
+Over the last few months several of us have gotten obsessed with chess but at a certain point the game became stale. We theorized this is because chess is a **very** logical game, one that lacks a randomness. That's why we came up with the idea for goose chess - essentially chess with significantly increased RNG!
 
-## To Dos
-- Implement a method in `Game` that returns true if this move exposes the player's king to check. Use it to disallow the move and inform user.
-- Write unit tests 
+---
+## Backend
 
-## Demo
+Our backend is built on top of a node.js server running with web sockets.
 
-http://www.talhaawan.net/react-chess/
+Check it out here - https://github.com/Tyler16/goose-chess-backend
 
-## Blog Post
+---
 
-https://www.techighness.com/post/develop-two-player-chess-game-with-react-js/
+### Built based on tutorial written by Talha Awan
 
+The tutorial helped us with displaying the chess board and some of the piece logic, but those were the only things that were implemented by Talha. Everything else was written by us <em>(home page, goose features, castling & en passant, multiplayer capabilities, etc)</em>.
 
+[Check out the tutorial here!](https://www.techighness.com/post/develop-two-player-chess-game-with-react-js/)

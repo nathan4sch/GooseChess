@@ -1,8 +1,9 @@
 import React from 'react';
+
 import "./Home.css"
 
 function Home() {
-    return (
+    return (    
         <div id = "home">
             <div id = "content">
                 <img src = "https://i.ibb.co/tDn2GZf/goose-Chess.png" width= "15%" alt=""/>
