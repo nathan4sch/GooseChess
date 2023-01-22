@@ -71,7 +71,19 @@ export default class Game extends React.Component {
       return
     }
 
+    
+
     squares[this.state.sourceSelection].style = { ...squares[this.state.sourceSelection].style, backgroundColor: "" };
+
+    if (squares[i] && squares[i].player === this.state.player) {
+      squares[i].style = { ...squares[i].style, backgroundColor: "RGB(111,143,114)" };
+      this.setState({
+        sourceSelection: i,
+      });
+      return
+
+
+    }
 
     if (squares[this.state.sourceSelection].constructor.name === "King" && !squares[this.state.sourceSelection].moved && (this.state.sourceSelection - i === -3 || this.state.sourceSelection - i === 4)) {
       if (i < this.state.sourceSelection) i += 2
@@ -152,6 +164,8 @@ export default class Game extends React.Component {
             if (squares[i].constructor.name === "King") {
               console.log("endgame black wins")
               alert("Black wins!")
+              document.location.reload();
+
             }          
           }
           else {
@@ -159,6 +173,7 @@ export default class Game extends React.Component {
             if (squares[i].constructor.name === "King") {
               console.log("endgame white wins")
               alert("White wins!")
+              document.location.reload();
             }
           }
         }

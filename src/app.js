@@ -4,6 +4,7 @@ import NoPage from "./pages/NoPage";
 import Game from "./pages/Game";
 
 
+
 export default function App() {
   return (
     <BrowserRouter>

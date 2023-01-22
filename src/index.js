@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
 import Game from "./pages/Game";
 
-
 export default function App() {
   return (
     <BrowserRouter>
