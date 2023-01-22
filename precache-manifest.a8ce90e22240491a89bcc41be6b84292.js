@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "3043afa1ae5b656a9c748b3dbddb60d6",
+    "revision": "e15d38afafa6394ed1b670b31f3dedc5",
     "url": "/goose-chess/index.html"
   },
   {
-    "revision": "f305ecce4866954dd98a",
+    "revision": "9ded5d6e06f65422ca3b",
     "url": "/goose-chess/static/css/main.9002f75f.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/goose-chess/static/js/2.e6c92074.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "f305ecce4866954dd98a",
-    "url": "/goose-chess/static/js/main.f0221368.chunk.js"
+    "revision": "9ded5d6e06f65422ca3b",
+    "url": "/goose-chess/static/js/main.bf6d5c05.chunk.js"
   },
   {
     "revision": "24851056647dcbcf2435",
