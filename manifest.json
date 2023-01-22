@@ -8,6 +8,7 @@
       "type": "image/png"
     }
   ],
+  "start_url": "https://evanz142.github.io/goose-chess/index.html",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
