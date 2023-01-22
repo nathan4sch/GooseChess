@@ -24,7 +24,7 @@ export default function App() {
     <HashRouter>
       <Routes>
             <Route path ="/" element={<Home/>} />
-            <Route path = "game" element={<Game/>} />
+            <Route path = "/goose-chess/game" element={<Game/>} />
             <Route path = "*" element={<Home/>} />
       </Routes>
     </HashRouter>
