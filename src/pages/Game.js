@@ -106,7 +106,9 @@ export default class Game extends React.Component {
           // opposing player left the game: kick player back to lobby
           alert("The opponent left the match");
           window.location.href = "/";
-        break;
+          break;
+        default:
+          break;
       }
     }
   }
