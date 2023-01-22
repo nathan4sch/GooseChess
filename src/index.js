@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './index.css';
 //import Game from './components/Game.js'
-import { HashRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import NoPage from "./pages/NoPage";
 import Game from "./pages/Game";
@@ -21,13 +21,13 @@ export default function App() {
   */
   
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
             <Route path ="/" element={<Home/>} />
-            <Route path = "/goose-chess/game" element={<Game/>} />
+            <Route path = "game" element={<Game/>} />
             <Route path = "*" element={<Home/>} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 
