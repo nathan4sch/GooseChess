@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/goose-chess/static/css/main.9002f75f.chunk.css",
+    "main.js": "/goose-chess/static/js/main.1c5d5f6b.chunk.js",
+    "main.js.map": "/goose-chess/static/js/main.1c5d5f6b.chunk.js.map",
+    "runtime-main.js": "/goose-chess/static/js/runtime-main.70da113e.js",
+    "runtime-main.js.map": "/goose-chess/static/js/runtime-main.70da113e.js.map",
+    "static/js/2.c56d9768.chunk.js": "/goose-chess/static/js/2.c56d9768.chunk.js",
+    "static/js/2.c56d9768.chunk.js.map": "/goose-chess/static/js/2.c56d9768.chunk.js.map",
+    "index.html": "/goose-chess/index.html",
+    "precache-manifest.f1876129384ab58844753e73ff9a5462.js": "/goose-chess/precache-manifest.f1876129384ab58844753e73ff9a5462.js",
+    "service-worker.js": "/goose-chess/service-worker.js",
+    "static/css/main.9002f75f.chunk.css.map": "/goose-chess/static/css/main.9002f75f.chunk.css.map",
+    "static/js/2.c56d9768.chunk.js.LICENSE.txt": "/goose-chess/static/js/2.c56d9768.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.70da113e.js",
+    "static/js/2.c56d9768.chunk.js",
+    "static/css/main.9002f75f.chunk.css",
+    "static/js/main.1c5d5f6b.chunk.js"
+  ]
+}
