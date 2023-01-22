@@ -97,7 +97,7 @@ export default class Game extends React.Component {
 
           break;
         case "endGame":
-          alert(this.state.turn + " wins!")
+          alert(this.state.turn.charAt(0).toUpperCase() + this.state.turn.slice(1) + " wins!")
           window.location.href = "/";
           break;
         case "close":
