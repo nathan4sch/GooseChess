@@ -490,7 +490,7 @@ export default class Game extends React.Component {
         // Send new board to the server for the other player to recieve.
         console.log("Sending data");
         console.log(this.serialize());
-        this.state.connection.send(this.serialize());
+        this.state.connection.send(JSON.stringify({type: "boardUpdate", data: this.serialize()}));
 
       } else {
         this.setState({
@@ -542,40 +542,26 @@ export default class Game extends React.Component {
 
   serialize() {
     let serializedState = {}
-    serializedState.type = "boardUpdate"
     serializedState.squares = []
     for (let i = 0; i < this.state.squares.length; i++) {
-      /* 0 - type
-       * 1 - player #
-       * 2 - moved
-       * 3 - color
-       * 4 - position
-       */
       if (this.state.squares[i]) {
-        let tmpArr = []
-        tmpArr[0] = this.state.squares[i].constructor.name
-        tmpArr[1] = this.state.squares[i].player
-        if (tmpArr[0] === "King" || tmpArr[0] === "Rook") {
-          tmpArr[2] = this.state.squares[i].moved
-        } else {
-          tmpArr[2] = false
+        serializedState.squares.push({})
+        serializedState.squares[i].type = this.state.squares[i].constructor.name
+        serializedState.squares[i].player = this.state.squares[i].player
+        if (serializedState.squares[i].type === "King" || serializedState.squares[i].type === "Rook") {
+          serializedState.squares[i].moved = this.state.squares[i].moved
         }
-        if (tmpArr[0] === "Goose") {
-          tmpArr[3] = this.state.squares[i].color
-          tmpArr[4] = this.state.squares[i].position
-        } else {
-          tmpArr[3] = -1
-          tmpArr[4] = -1
+        if (serializedState.squares[i].type === "Goose") {
+          serializedState.squares[i].color = this.state.squares[i].color
+          serializedState.squares[i].position = this.state.squares[i].position
         }
-        serializedState.squares.push(tmpArr)
       } else {
-        serializedState.squares.push([])
+        serializedState.squares.push(null)
       }
     }
     serializedState.enPassantColumn = this.state.enPassantColumn;
     serializedState.numberOfFallenSoldiers = this.state.numberOfFallenSoldiers;
     serializedState.geeseColors = this.state.geeseColors
-    console.log(JSON.stringify(serializedState))
     return JSON.stringify(serializedState)
   }
 
@@ -593,36 +579,29 @@ export default class Game extends React.Component {
       if (!obj.squares[i]) {
         newSquares.push(null)
       } else {
-        let pieceObj;
-        try {
-          pieceObj = JSON.parse(obj.squares[i])
-        } catch (ex) {
-          console.error(ex)
-          return;
-        }
-        switch (pieceObj.type) {
+        switch (obj.squares[i].type) {
           case "King":
-            newSquares.push(new King(pieceObj.player))
-            newSquares[i].moved = pieceObj.moved
+            newSquares.push(new King(obj.squares[i].player))
+            newSquares[i].moved = obj.squares[i].moved
             break;
           case "Queen":
-            newSquares.push(new Queen(pieceObj.player))
+            newSquares.push(new Queen(obj.squares[i].player))
             break;
           case "Bishop":
-            newSquares.push(new Bishop(pieceObj.player))
+            newSquares.push(new Bishop(obj.squares[i].player))
             break;
           case "Knight":
-            newSquares.push(new Knight(pieceObj.player))
+            newSquares.push(new Knight(obj.squares[i].player))
             break;
           case "Rook":
-            newSquares.push(new Rook(pieceObj.player))
-            newSquares[i].moved = pieceObj.moved
+            newSquares.push(new Rook(obj.squares[i].player))
+            newSquares[i].moved = obj.squares[i].moved
             break;
           case "Pawn":
-            newSquares.push(new Pawn(pieceObj.player))
+            newSquares.push(new Pawn(obj.squares[i].player))
             break;
           case "Goose":
-            newSquares.push(new Goose(3, pieceObj.position, pieceObj.color))
+            newSquares.push(new Goose(3, obj.squares[i].position, obj.squares[i].color))
             newGeese.push(newSquares[i])
             break;
           default:
