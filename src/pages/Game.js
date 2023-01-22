@@ -97,7 +97,8 @@ export default class Game extends React.Component {
 
           break;
         case "endGame":
-
+          alert(this.state.turn + " wins!")
+          window.location.href = "/";
           break;
         case "close":
           // opposing player left the game: kick player back to lobby
@@ -229,6 +230,7 @@ export default class Game extends React.Component {
           if (squares[i].player === 1) {
             if (squares[i].constructor.name === "King") {
               console.log("endgame black wins")
+              this.state.connection.send(JSON.stringify({type: "endGame"}))
               alert("Black wins!")
 
               // send the user back to the lobby
@@ -238,6 +240,7 @@ export default class Game extends React.Component {
           else {
             if (squares[i].constructor.name === "King") {
               console.log("endgame white wins")
+              this.state.connection.send(JSON.stringify({type: "endGame"}))
               alert("White wins!")
 
               // send the user back to the lobby
