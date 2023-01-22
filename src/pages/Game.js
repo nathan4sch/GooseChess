@@ -8,7 +8,6 @@ import Bishop from '../pieces/bishop';
 import Knight from '../pieces/knight';
 import Pawn from '../pieces/pawn';
 import Goose from '../pieces/goose';
-import FallenSoldierBlock from '../components/fallen-soldier-block.js';
 import initialiseChessBoard from '../helpers/board-initialiser.js';
 
 
@@ -22,8 +21,6 @@ export default class Game extends React.Component {
 
     this.state = {
       squares: initialiseChessBoard(),
-      whiteFallenSoldiers: [],
-      blackFallenSoldiers: [],
       geese: [],
       player: 1,
       sourceSelection: -1,
@@ -59,7 +56,7 @@ export default class Game extends React.Component {
   }
 
   componentDidMount() {
-    const connection = new WebSocket("wss://18.188.216.102:8080") 
+    const connection = new WebSocket("ws://18.188.216.102:8080") 
     console.log(connection);
 
     this.setState({
@@ -169,8 +166,6 @@ export default class Game extends React.Component {
       });
     }
     else {
-      const whiteFallenSoldiers = [];
-      const blackFallenSoldiers = [];
       const isDestEnemyOccupied = Boolean(squares[i]);
       const isMovePossible = squares[this.state.sourceSelection].isMovePossible(this.state.sourceSelection, i, isDestEnemyOccupied);
       const srcToDestPath = squares[this.state.sourceSelection].getSrcToDestPath(this.state.sourceSelection, i);
@@ -190,7 +185,7 @@ export default class Game extends React.Component {
       if ((isMovePossible || isEnPassant) && isMoveLegal && (squares[i] === null || squares[i].constructor.name !== "Goose") && (!isCastle || (this.state.sourceSelection - i === 2 && canLeftCastle) || (this.state.sourceSelection - i === -2 && canRightCastle))) {
         if (squares[i] !== null) {
           
-          this.setState(oldState => ({numberOfFallenSoldiers: oldState.numberOfFallenSoldiers + 1}))
+          await this.setState(oldState => ({numberOfFallenSoldiers: oldState.numberOfFallenSoldiers + 1}))
           //console.log("number of fallen soldiers : " + this.state.numberOfFallenSoldiers);
           if ((this.state.numberOfFallenSoldiers % 3) === 0 && this.state.numberOfFallenSoldiers !== 0 && this.state.numberOfFallenSoldiers < 24) {
             //console.log("the if statement");
@@ -219,7 +214,7 @@ export default class Game extends React.Component {
             //let newColor = this.state.geeseColors[this.state.geeseColors.length - 1];
             let newArray = this.state.geeseColors;
             let newColor = newArray.pop();
-            this.setState(oldState => ({geeseColors: newArray}));
+            await this.setState(oldState => ({geeseColors: newArray}));
           
 
             let newGoose = new Goose(3, newRandomValue, newColor);
@@ -232,7 +227,6 @@ export default class Game extends React.Component {
 
 
           if (squares[i].player === 1) {
-            whiteFallenSoldiers.push(squares[i]);
             if (squares[i].constructor.name === "King") {
               console.log("endgame black wins")
               alert("Black wins!")
@@ -242,7 +236,6 @@ export default class Game extends React.Component {
             }          
           }
           else {
-            blackFallenSoldiers.push(squares[i]);
             if (squares[i].constructor.name === "King") {
               console.log("endgame white wins")
               alert("White wins!")
@@ -290,11 +283,9 @@ export default class Game extends React.Component {
         
         if (isEnPassant) {
           if (this.state.player === 1) {
-            blackFallenSoldiers.push(squares[i + 8])
             squares[i + 8] = null
           }
           else {
-            whiteFallenSoldiers.push(squares[i - 8])
             squares[i - 8] = null
           }
         }
@@ -320,14 +311,12 @@ export default class Game extends React.Component {
                i === 2 || i === 3 ||
                i === 4 || i === 5 ||
                i === 6 || i === 7 ) {
-              whiteFallenSoldiers.push(squares[i]);
               squares[i] = new Queen(1);
                }
               if(i === 56 || i === 57 ||
                 i === 58 || i === 59 ||
                 i === 60 || i === 61 ||
                 i === 62 || i === 63 ) {
-              blackFallenSoldiers.push(squares[i]);
               squares[i] = new Queen(2);
             } 
           }
@@ -336,8 +325,6 @@ export default class Game extends React.Component {
           await this.setState(oldState => ({
             sourceSelection: -1,
             squares: squares,
-            whiteFallenSoldiers: [...oldState.whiteFallenSoldiers, ...whiteFallenSoldiers],
-            blackFallenSoldiers: [...oldState.blackFallenSoldiers, ...blackFallenSoldiers],
             status: '',
             turn
           }));
@@ -466,14 +453,10 @@ export default class Game extends React.Component {
             possiblePositions.push(position + 1);
           }
           let gooseCaptureSquare = possiblePositions[Math.floor(Math.random() * (possiblePositions.length))];
-          if(squares[gooseCaptureSquare].player === 1) {
-            whiteFallenSoldiers.push(squares[gooseCaptureSquare]);
-          } else {
-            blackFallenSoldiers.push(squares[gooseCaptureSquare]);
-          }
+
           squares[gooseCaptureSquare] = squares[position];
           squares[position] = null;
-          this.state.geese[i].changePosition(gooseCaptureSquare);
+          await this.state.geese[i].changePosition(gooseCaptureSquare);
           gooseCaptureSquare = null;
         } else {
             //console.log("Original Position : " + position);
@@ -485,9 +468,11 @@ export default class Game extends React.Component {
             squares[possiblePositions[newPositionIndex]] = squares[position];
             squares[position] = null;
             //this.Goose.position = possiblePositions[newPositionIndex];
-            this.state.geese[i].changePosition(possiblePositions[newPositionIndex]);
+            await this.state.geese[i].changePosition(possiblePositions[newPositionIndex]);
           }
         }
+
+        await this.setState({squares: squares})
 
         // Send new board to the server for the other player to recieve.
         console.log("Sending data");
@@ -498,7 +483,7 @@ export default class Game extends React.Component {
       } else {
         this.setState({
           status: "Wrong selection. Choose valid source and destination again.",
-         sourceSelection: -1
+          sourceSelection: -1
         });
       }
     }
@@ -645,17 +630,6 @@ export default class Game extends React.Component {
             </div>
             </div>
             <div className="game-status">{this.state.status}</div>
-
-            <div className="fallen-soldier-block">
-
-              {
-                <FallenSoldierBlock
-                whiteFallenSoldiers={this.state.whiteFallenSoldiers}
-                blackFallenSoldiers={this.state.blackFallenSoldiers}
-              />
-              }
-            </div>
-
           </div>
         </div>
       </div>
