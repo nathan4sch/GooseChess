@@ -59,7 +59,7 @@ export default class Game extends React.Component {
   }
 
   componentDidMount() {
-    const connection = new WebSocket("ws://18.188.216.102:8080") 
+    const connection = new WebSocket("wss://18.188.216.102:8080") 
     console.log(connection);
 
     this.setState({
