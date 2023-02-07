@@ -1,3 +1,6 @@
+### Currently the majority of commits to this repository were made over VSCode Liveshare so although they show up under Evanz142, this project was done by [Evan](https://github.com/Evanz142), [Nathan](https://github.com/nathan4sch), [PJ](https://github.com/pjhenwood8) and [Tyler](https://github.com/Tyler16).
+
+
 ![gooseChess.png](https://i.ibb.co/tDn2GZf/goose-Chess.png)
 # Goose Chess
 ## Game Rules:
