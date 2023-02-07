@@ -30,7 +30,7 @@ Check it out here - https://github.com/Tyler16/goose-chess-backend
 
 ---
 
-### Built based on tutorial written by Talha Awan
+### Built based on tutorial written by Talha Awan.
 
 The tutorial helped us with displaying the chess board and some of the piece logic, but those were the only things that were implemented by Talha. Everything else was written by us <em>(home page, goose features, castling & en passant, multiplayer capabilities, etc)</em>.
 
