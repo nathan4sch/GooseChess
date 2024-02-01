@@ -1,7 +1,7 @@
 ### Currently the majority of commits to this repository were made over VSCode Liveshare so although they show up under Evanz142, this project was done by [Evan](https://github.com/Evanz142), [Nathan](https://github.com/nathan4sch), [PJ](https://github.com/pjhenwood8) and [Tyler](https://github.com/Tyler16).
 
+![Goose_Chess_Demo](https://github.com/nathan4sch/GooseChess/assets/112205153/f4186b4b-0ef5-497f-87ca-46bea62acba7)
 
-![gooseChess.png](https://i.ibb.co/tDn2GZf/goose-Chess.png)
 # Goose Chess
 ## Game Rules:
 Goose chess is chess with a twist: There are multiple goose pieces on the board.
